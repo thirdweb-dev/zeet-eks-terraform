@@ -8,21 +8,25 @@ output "cluster_security_group_id" {
   value       = module.eks.cluster_security_group_id
 }
 
-output "self_managed_node_groups_role_arns" {
+output "self_managed_node_groups_role" {
   value = values(module.eks.self_managed_node_groups)[*].iam_role_arn
 }
 
 output "region" {
   description = "AWS region."
-  value       = var.aws_region
+  value       = var.region
+}
+
+output "dns_zone" {
+  value = aws_route53_zone.zeet.zone_id
 }
 
 output "aws_account_id" {
   value = data.aws_caller_identity.current.account_id
 }
 
-output "zeet_cluster_id" {
-  value = var.zeet_cluster_id
+output "cluster_id" {
+  value = var.cluster_id
 }
 
 output "cluster_name" {
@@ -38,31 +42,6 @@ output "ssh_private" {
   value     = tls_private_key.ssh.private_key_pem
 }
 
-output "cluster_cloudwatch_log_group" {
-  value = {
-    name: module.eks.cloudwatch_log_group_name
-    arn: module.eks.cloudwatch_log_group_arn
-  }
-}
-
-output "iam_roles" {
-  description = "Map of all iam roles to their {name, arn}."
-  value = module.iam_roles.iam_roles
-}
-
-output "ecr_repository" {
-  value = {
-    url: aws_ecr_repository.zeet.repository_url
-    name: aws_ecr_repository.zeet.name
-    arn: aws_ecr_repository.zeet.arn
-  }
-}
-
-output "route53_zone" {
-  value = {
-    zone_id: aws_route53_zone.zeet.zone_id,
-    arn: aws_route53_zone.zeet.arn,
-    name: aws_route53_zone.zeet.name,
-    name_servers: aws_route53_zone.zeet.name_servers
-  }
+output "cluster_ns_records" {
+  value = aws_route53_zone.zeet.name_servers
 }
