@@ -141,7 +141,7 @@ locals {
     }
     "r6a-2xlarge-system" : {
       instance_types = ["r6a.2xlarge"]
-      desired_size   = 2
+      desired_size   = 1
 
       labels = {
         "zeet.co/dedicated": "system"
