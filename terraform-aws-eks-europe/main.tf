@@ -139,7 +139,7 @@ locals {
         "zeet.co/dedicated" = "system"
       }
     }
-    "r6a-2xlarge-system" : {
+    "r6a-2xlarge-system-new" : {
       instance_types = ["r6a.2xlarge"]
       desired_size   = 2
 
