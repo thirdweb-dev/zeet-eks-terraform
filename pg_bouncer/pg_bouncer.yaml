@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgbouncer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgbouncer
+  template:
+    metadata:
+      labels:
+        app: pgbouncer
+    spec:
+      containers:
+      - name: pgbouncer
+        image: edoburu/pgbouncer:latest
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: pgbouncer-config
+          mountPath: /etc/pgbouncer
+      volumes:
+      - name: pgbouncer-config
+        secret:
+          secretName: pgbouncer-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgbouncer
+spec:
+  selector:
+    app: pgbouncer
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  type: ClusterIP
