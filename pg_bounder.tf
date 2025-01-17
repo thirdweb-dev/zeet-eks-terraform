@@ -11,22 +11,22 @@ resource "kubernetes_secret" "pgbouncer_config" {
   data = {
     "pgbouncer.ini" = <<EOT
 [databases]
-your_database_name = host=${DB_HOST} port=${DB_PORT} dbname=${DB_NAME}
+your_database_name = host=${var.db_host} port=${var.db_port} dbname=${var.db_name}
 
 [pgbouncer]
 logfile = /var/log/pgbouncer/pgbouncer.log
 pidfile = /var/run/pgbouncer/pgbouncer.pid
 listen_addr = 0.0.0.0
-listen_port = 5432
+listen_port = ${var.db_port}
 auth_type = md5
 auth_file = /etc/pgbouncer/userlist.txt
 pool_mode = transaction
-max_client_conn = 100
-default_pool_size = 20
+max_client_conn = 200
+default_pool_size = 40
 EOT
 
     "userlist.txt" = <<EOT
-"${DB_USER}" "${DB_PASSWORD_HASHED}"
+"${var.db_user}" "${var.db_password_hashed}"
 EOT
   }
 }
