@@ -133,7 +133,6 @@ locals {
   worker_templates_cpu = { for k, v in {
     "m5-large-system" : {
       instance_types = ["m5.large"]
-      desired_size   = 1
 
       labels = {
         "zeet.co/dedicated" = "system"
@@ -148,8 +147,8 @@ locals {
         "zeet.co/dedicated": "system"
       }
     }
-    "c5-4xlarge-dedi" : {
-      instance_types = ["c5.4xlarge"]
+    "m7a-4xlarge-dedi" : {
+      instance_types = ["m7a.4xlarge"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -163,8 +162,8 @@ locals {
         }
       ]
     }
-    "c5-2xlarge-dedi" : {
-      instance_types = ["c5.2xlarge"]
+    "m7a-xlarge-dedi" : {
+      instance_types = ["m7a.xlarge"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -178,23 +177,8 @@ locals {
         }
       ]
     }
-    "c5-xlarge-dedi" : {
-      instance_types = ["c5.xlarge"]
-
-      labels = {
-        "zeet.co/dedicated" = "dedicated"
-      }
-
-      taints = [
-        {
-          key    = "zeet.co/dedicated"
-          value  = "dedicated"
-          effect = "NO_SCHEDULE"
-        }
-      ]
-    }
-    "m5-large-dedi" : {
-      instance_types = ["m5.large"]
+    "m7a-large-dedi" : {
+      instance_types = ["m7a.large"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -210,6 +194,8 @@ locals {
     }
     "m7a-2xlarge-dedi" : {
       instance_types = ["m7a.2xlarge"]
+      desired_size   = 2
+      min_size       = 2
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -219,22 +205,6 @@ locals {
         {
           key    = "zeet.co/dedicated"
           value  = "dedicated"
-          effect = "NO_SCHEDULE"
-        }
-      ]
-    }
-    "c5-xlarge-guran" : {
-      instance_types = ["c5.xlarge"]
-      capacity_type  = "SPOT"
-
-      labels = {
-        "zeet.co/dedicated" = "guaranteed"
-      }
-
-      taints = [
-        {
-          key    = "zeet.co/dedicated"
-          value  = "guaranteed"
           effect = "NO_SCHEDULE"
         }
       ]
