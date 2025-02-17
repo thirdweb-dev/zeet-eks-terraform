@@ -210,6 +210,7 @@ locals {
     }
     "c8g-2xlarge-dedi" : {
       instance_types = ["c8g.2xlarge"]
+      ami_type        = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
