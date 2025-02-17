@@ -208,8 +208,8 @@ locals {
         }
       ]
     }
-    "c6a-2xlarge-dedi" : {
-      instance_types = ["c6a.2xlarge"]
+    "m7a-2xlarge-dedi" : {
+      instance_types = ["m7a.2xlarge"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
