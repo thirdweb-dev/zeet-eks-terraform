@@ -208,9 +208,8 @@ locals {
         }
       ]
     }
-    "c8g-2xlarge-dedi" : {
-      instance_types = ["c8g.2xlarge"]
-      ami_type        = "AL2_ARM_64"
+    "c6a-2xlarge-dedi" : {
+      instance_types = ["c6a.2xlarge"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
