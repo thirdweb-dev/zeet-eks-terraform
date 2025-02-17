@@ -206,6 +206,21 @@ locals {
           effect = "NO_SCHEDULE"
         }
       ]
+    },
+    "c8g-4xlarge-dedi" : {
+      instance_types = ["c8g.4xlarge"]
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
     }
     "c5-xlarge-guran" : {
       instance_types = ["c5.xlarge"]
