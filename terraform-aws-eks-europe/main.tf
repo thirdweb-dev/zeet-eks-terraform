@@ -246,10 +246,9 @@ locals {
         }
       ]
     }
-    "c7g-large-dedi-private" : {
-      instance_types      = ["c7g.large"]
+    "m6a-large-dedi-private" : {
+      instance_types      = ["m6a.large"]
       autoscaling_enabled = var.enable_nat
-      ami_type       = "AL2_ARM_64"
 
       subnet_ids = [sort(module.vpc.private_subnets)[0]]
 
