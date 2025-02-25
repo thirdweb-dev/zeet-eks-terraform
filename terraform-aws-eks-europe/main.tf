@@ -193,8 +193,8 @@ locals {
         }
       ]
     }
-    "m6a-large-dedi" : {
-      instance_types = ["m6a.large"]
+    "c7g-large-dedi" : {
+      instance_types = ["c7g.large"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -224,8 +224,8 @@ locals {
         }
       ]
     }
-    "m6a-large-shared" : {
-      instance_types = ["m6a.large"]
+    "c7g-large-shared" : {
+      instance_types = ["c7g.large"]
       capacity_type  = "SPOT"
 
       labels = {
@@ -240,8 +240,8 @@ locals {
         }
       ]
     }
-    "m6a-large-dedi-private" : {
-      instance_types      = ["m6a.large"]
+    "c7g-large-dedi-private" : {
+      instance_types      = ["c7g.large"]
       autoscaling_enabled = var.enable_nat
 
       subnet_ids = [sort(module.vpc.private_subnets)[0]]
