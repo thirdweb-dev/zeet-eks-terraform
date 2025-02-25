@@ -131,8 +131,9 @@ resource "aws_key_pair" "ssh" {
 
 locals {
   worker_templates_cpu = { for k, v in {
-    "m5-large-system" : {
-      instance_types = ["m5.large"]
+    "m6a-large-system" : {
+      instance_types = ["m6a.large"]
+      desired_size   = 1
 
       labels = {
         "zeet.co/dedicated" = "system"
@@ -140,15 +141,16 @@ locals {
     }
     "r6a-2xlarge-system-new" : {
       instance_types = ["r6a.2xlarge"]
-      desired_size   = 2
-      min_size       = 1
+      desired_size   = 1
+      min_size       = 0
 
       labels = {
         "zeet.co/dedicated": "system"
       }
     }
-    "m7a-4xlarge-dedi" : {
-      instance_types = ["m7a.4xlarge"]
+    "c7g-4xlarge-dedi" : {
+      instance_types = ["c7g.4xlarge"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -162,8 +164,9 @@ locals {
         }
       ]
     }
-    "m7a-xlarge-dedi" : {
-      instance_types = ["m7a.xlarge"]
+    "c7g-2xlarge-dedi" : {
+      instance_types = ["c7g.2xlarge"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -177,8 +180,9 @@ locals {
         }
       ]
     }
-    "m7a-large-dedi" : {
-      instance_types = ["m7a.large"]
+    "c7g-xlarge-dedi" : {
+      instance_types = ["c7g.xlarge"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -192,10 +196,9 @@ locals {
         }
       ]
     }
-    "m7a-2xlarge-dedi" : {
-      instance_types = ["m7a.2xlarge"]
-      desired_size   = 2
-      min_size       = 2
+    "c7g-large-dedi" : {
+      instance_types = ["c7g.large"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -209,9 +212,27 @@ locals {
         }
       ]
     }
-    "m5-large-shared" : {
-      instance_types = ["m5.large"]
+    "c7g-xlarge-guran" : {
+      instance_types = ["c7g.xlarge"]
       capacity_type  = "SPOT"
+      ami_type       = "AL2_ARM_64"
+
+      labels = {
+        "zeet.co/dedicated" = "guaranteed"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "guaranteed"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "c7g-large-shared" : {
+      instance_types = ["c7g.large"]
+      capacity_type  = "SPOT"
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "shared"
@@ -225,8 +246,8 @@ locals {
         }
       ]
     }
-    "m5-large-dedi-private" : {
-      instance_types      = ["m5.large"]
+    "m6a-large-dedi-private" : {
+      instance_types      = ["m6a.large"]
       autoscaling_enabled = var.enable_nat
 
       subnet_ids = [sort(module.vpc.private_subnets)[0]]
@@ -249,10 +270,11 @@ locals {
         }
       ]
     }
-    "c5-xlarge-guran-priv" : {
-      instance_types      = ["c5.xlarge"]
+    "c7g-xlarge-guran-priv" : {
+      instance_types      = ["c7g.xlarge"]
       capacity_type       = "SPOT"
       autoscaling_enabled = var.enable_nat
+      ami_type       = "AL2_ARM_64"
 
       subnet_ids = [sort(module.vpc.private_subnets)[0]]
 
