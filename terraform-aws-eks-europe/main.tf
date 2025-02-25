@@ -150,6 +150,7 @@ locals {
     }
     "c7g-4xlarge-dedi" : {
       instance_types = ["c7g.4xlarge"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -165,6 +166,7 @@ locals {
     }
     "c7g-2xlarge-dedi" : {
       instance_types = ["c7g.2xlarge"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -180,6 +182,7 @@ locals {
     }
     "c7g-xlarge-dedi" : {
       instance_types = ["c7g.xlarge"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -195,6 +198,7 @@ locals {
     }
     "c7g-large-dedi" : {
       instance_types = ["c7g.large"]
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -211,6 +215,7 @@ locals {
     "c7g-xlarge-guran" : {
       instance_types = ["c7g.xlarge"]
       capacity_type  = "SPOT"
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "guaranteed"
@@ -227,6 +232,7 @@ locals {
     "c7g-large-shared" : {
       instance_types = ["c7g.large"]
       capacity_type  = "SPOT"
+      ami_type       = "AL2_ARM_64"
 
       labels = {
         "zeet.co/dedicated" = "shared"
@@ -243,6 +249,7 @@ locals {
     "c7g-large-dedi-private" : {
       instance_types      = ["c7g.large"]
       autoscaling_enabled = var.enable_nat
+      ami_type       = "AL2_ARM_64"
 
       subnet_ids = [sort(module.vpc.private_subnets)[0]]
 
@@ -268,6 +275,7 @@ locals {
       instance_types      = ["c7g.xlarge"]
       capacity_type       = "SPOT"
       autoscaling_enabled = var.enable_nat
+      ami_type       = "AL2_ARM_64"
 
       subnet_ids = [sort(module.vpc.private_subnets)[0]]
 
