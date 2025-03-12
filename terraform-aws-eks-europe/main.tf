@@ -139,18 +139,72 @@ locals {
         "zeet.co/dedicated" = "system"
       }
     }
-    "c7g-2xlarge-arm" : {
-      instance_types = ["c7g.2xlarge"]
+    "c7g-4xlarge-arm" : {
+      instance_types = ["c7g.4xlarge"]
       ami_type       = "AL2_ARM_64"
+      min_size       = 5
+      desired_size   = 5
+      max_size       = 100
       
       labels = {
-        "zeet.co/dedicated" = "arm"
+        "zeet.co/dedicated" = "dedicated"
       }
 
       taints = [
         {
           key    = "zeet.co/dedicated"
-          value  = "arm"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "c7g-2xlarge-arm" : {
+      instance_types = ["c7g.2xlarge"]
+      ami_type       = "AL2_ARM_64"
+      max_size       = 100
+      
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "c7g-xlarge-arm" : {
+      instance_types = ["c7g.xlarge"]
+      ami_type       = "AL2_ARM_64"
+      max_size       = 100
+      
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "c7g-large-arm" : {
+      instance_types = ["c7g.large"]
+      ami_type       = "AL2_ARM_64"
+      max_size       = 100
+      
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
           effect = "NO_SCHEDULE"
         }
       ]
