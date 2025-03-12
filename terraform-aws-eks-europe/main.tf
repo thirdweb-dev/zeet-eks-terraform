@@ -147,6 +147,22 @@ locals {
         "zeet.co/dedicated": "system"
       }
     }
+    "c7g-2xlarge-arm" : {
+      instance_types = ["c7g.2xlarge"]
+      ami_type       = "AL2_ARM_64"
+      
+      labels = {
+        "thirdweb" = "arm"
+      }
+
+      taints = [
+        {
+          key    = "thirdweb"
+          value  = "arm"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
     "c5-4xlarge-dedi" : {
       instance_types = ["c5.4xlarge"]
 
