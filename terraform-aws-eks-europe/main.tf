@@ -189,7 +189,7 @@ locals {
     }
     "c5-xlarge-dedi" : {
       instance_types = ["c5.xlarge"]
-      max_size       = 92
+      desired_size   = 92
       max_size       = 100
 
       labels = {
