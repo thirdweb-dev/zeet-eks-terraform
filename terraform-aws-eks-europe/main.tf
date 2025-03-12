@@ -144,12 +144,12 @@ locals {
       ami_type       = "AL2_ARM_64"
       
       labels = {
-        "thirdweb" = "arm"
+        "zeet.co/dedicated" = "arm"
       }
 
       taints = [
         {
-          key    = "thirdweb"
+          key    = "zeet.co/dedicated"
           value  = "arm"
           effect = "NO_SCHEDULE"
         }
