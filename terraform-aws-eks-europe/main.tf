@@ -133,7 +133,7 @@ locals {
   worker_templates_cpu = { for k, v in {
     "m5-large-system" : {
       instance_types = ["m5.large"]
-      desired_size   = 1
+      desired_size   = 3
 
       labels = {
         "zeet.co/dedicated" = "system"
@@ -157,6 +157,7 @@ locals {
     }
     "c5-4xlarge-dedi" : {
       instance_types = ["c5.4xlarge"]
+      desired_size   = 3
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -172,6 +173,7 @@ locals {
     }
     "c5-2xlarge-dedi" : {
       instance_types = ["c5.2xlarge"]
+      desired_size   = 3
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -187,6 +189,8 @@ locals {
     }
     "c5-xlarge-dedi" : {
       instance_types = ["c5.xlarge"]
+      max_size       = 92
+      max_size       = 100
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -202,6 +206,8 @@ locals {
     }
     "m5-large-dedi" : {
       instance_types = ["m5.large"]
+      max_size       = 400
+      desired_size   = 106
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
