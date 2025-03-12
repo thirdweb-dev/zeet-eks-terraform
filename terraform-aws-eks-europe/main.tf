@@ -139,14 +139,6 @@ locals {
         "zeet.co/dedicated" = "system"
       }
     }
-    "r6a-2xlarge-system" : {
-      instance_types = ["r6a.2xlarge"]
-      desired_size   = 1
-
-      labels = {
-        "zeet.co/dedicated": "system"
-      }
-    }
     "c7g-2xlarge-arm" : {
       instance_types = ["c7g.2xlarge"]
       ami_type       = "AL2_ARM_64"
