@@ -146,12 +146,13 @@ locals {
       max_size       = 100
       
       labels = {
-        "engine/low_use" = "low_use"
+        "engine/type" = "low_use"
+        "zeet.co/dedicated" = "dedicated"
       }
 
       taints = [
         {
-          key    = "engine/low_use"
+          key    = "engine/type"
           value  = "low_use"
           effect = "NO_SCHEDULE"
         }
