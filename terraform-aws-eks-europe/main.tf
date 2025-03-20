@@ -158,6 +158,25 @@ locals {
         }
       ]
     }
+    "r6g-xlarge-arm" : {
+      instance_types = ["r6g.xlarge"]
+      ami_type       = "AL2_ARM_64"
+      desired_size   = 1
+      max_size       = 100
+      
+      labels = {
+        "engine/type" = "low_use_redis"
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "engine/type"
+          value  = "low_use_redis"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
     "c7g-4xlarge-arm" : {
       instance_types = ["c7g.4xlarge"]
       ami_type       = "AL2_ARM_64"
