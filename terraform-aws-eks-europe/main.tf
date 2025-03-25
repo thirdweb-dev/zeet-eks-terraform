@@ -139,8 +139,8 @@ locals {
         "zeet.co/dedicated" = "system"
       }
     }
-    "c7g-large-eng-prem-arm" : {
-      instance_types = ["c7g.large"]
+    "m6g-large-eng-prem" : {
+      instance_types = ["m6g.large"]
       ami_type       = "AL2_ARM_64"
       max_size       = 100
       
