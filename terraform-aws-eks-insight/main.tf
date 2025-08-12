@@ -131,16 +131,16 @@ resource "aws_key_pair" "ssh" {
 
 locals {
   worker_templates_cpu = { for k, v in {
-    "m5-large-system" : {
-      instance_types = ["m5.large"]
+    "m7a-large-system" : {
+      instance_types = ["m7a.large"]
       desired_size   = 1
 
       labels = {
         "zeet.co/dedicated" = "system"
       }
     }
-    "c5-4xlarge-dedi" : {
-      instance_types = ["c5.4xlarge"]
+    "c7a-4xlarge-dedi" : {
+      instance_types = ["c7a.4xlarge"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -154,8 +154,8 @@ locals {
         }
       ]
     }
-    "c5-2xlarge-dedi" : {
-      instance_types = ["c5.2xlarge"]
+    "c7a-2xlarge-dedi" : {
+      instance_types = ["c7a.2xlarge"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -169,8 +169,8 @@ locals {
         }
       ]
     }
-    "c5-xlarge-dedi" : {
-      instance_types = ["c5.xlarge"]
+    "c7a-xlarge-dedi" : {
+      instance_types = ["c7a.xlarge"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -184,8 +184,8 @@ locals {
         }
       ]
     }
-    "m5-large-dedi" : {
-      instance_types = ["m5.large"]
+    "m7a-large-dedi" : {
+      instance_types = ["m7a.large"]
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
@@ -199,8 +199,8 @@ locals {
         }
       ]
     }
-    "c5-xlarge-guran" : {
-      instance_types = ["c5.xlarge"]
+    "c7a-xlarge-guran" : {
+      instance_types = ["c7a.xlarge"]
       capacity_type  = "SPOT"
 
       labels = {
@@ -215,8 +215,8 @@ locals {
         }
       ]
     }
-    "m5-large-shared" : {
-      instance_types = ["m5.large"]
+    "m7a-large-shared" : {
+      instance_types = ["m7a.large"]
       capacity_type  = "SPOT"
 
       labels = {
@@ -231,8 +231,8 @@ locals {
         }
       ]
     }
-    "m5-large-dedi-private" : {
-      instance_types      = ["m5.large"]
+    "m7a-large-dedi-private" : {
+      instance_types      = ["m7a.large"]
       autoscaling_enabled = var.enable_nat
 
       subnet_ids = [sort(module.vpc.private_subnets)[0]]
@@ -255,8 +255,8 @@ locals {
         }
       ]
     }
-    "c5-xlarge-guran-priv" : {
-      instance_types      = ["c5.xlarge"]
+    "c7a-xlarge-guran-priv" : {
+      instance_types      = ["c7a.xlarge"]
       capacity_type       = "SPOT"
       autoscaling_enabled = var.enable_nat
 
