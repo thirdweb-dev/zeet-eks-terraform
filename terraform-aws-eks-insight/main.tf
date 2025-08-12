@@ -17,6 +17,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_availability_zones" "available" {}
 
+# ------------------------------------------------------------------------------------
+# IMPORTANT: Ensure var.cluster_version matches your live control plane (1.33)
+# ------------------------------------------------------------------------------------
+
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
@@ -34,14 +38,14 @@ resource "aws_eip" "nat" {
   }
 }
 
-data "aws_ami" "eks_gpu" {
-  most_recent = true
-  owners      = ["amazon"]
+# ------------------------------------------------------------------------------------
+# GPU AMI RESOLUTION (AL2023) — replaces data "aws_ami" "eks_gpu"
+# EKS 1.33 no longer publishes AL2 GPU AMIs. Use AL2023 via SSM Parameter Store.
+# Path: /aws/service/eks/optimized-ami/<k8s>/amazon-linux-2023/x86_64/nvidia/recommended/image_id
+# ------------------------------------------------------------------------------------
 
-  filter {
-    name   = "name"
-    values = ["amazon-eks-gpu-node-${var.cluster_version}*"]
-  }
+data "aws_ssm_parameter" "eks_al2023_x64_nvidia" {
+  name = "/aws/service/eks/optimized-ami/${var.cluster_version}/amazon-linux-2023/x86_64/nvidia/recommended/image_id"
 }
 
 module "vpc" {
@@ -84,7 +88,6 @@ resource "aws_security_group" "worker_public" {
     from_port = 22
     to_port   = 22
     protocol  = "tcp"
-
     cidr_blocks = [
       "0.0.0.0/0"
     ]
@@ -94,7 +97,6 @@ resource "aws_security_group" "worker_public" {
     from_port = 80
     to_port   = 80
     protocol  = "tcp"
-
     cidr_blocks = [
       "0.0.0.0/0"
     ]
@@ -104,7 +106,6 @@ resource "aws_security_group" "worker_public" {
     from_port = 443
     to_port   = 443
     protocol  = "tcp"
-
     cidr_blocks = [
       "0.0.0.0/0"
     ]
@@ -127,7 +128,6 @@ resource "aws_key_pair" "ssh" {
   key_name   = "ssh_key_${var.cluster_id}"
   public_key = tls_private_key.ssh.public_key_openssh
 }
-
 
 locals {
   worker_templates_cpu = { for k, v in {
@@ -273,7 +273,6 @@ locals {
           value  = "guaranteed"
           effect = "NO_SCHEDULE"
         },
-
         {
           key    = "zeet.co/static-ip"
           value  = "true"
@@ -281,7 +280,7 @@ locals {
         }
       ]
     }
-    } : k => merge({
+  } : k => merge({
       name                = k
       key_name            = aws_key_pair.ssh.key_name
       desired_size        = 0
@@ -305,6 +304,7 @@ locals {
     }, v)
   }
 
+  # --------------------------- GPU SELF-MANAGED NODES ----------------------------
   worker_templates_gpu = var.enable_gpu ? {
     "g4dn-xlarge-dedi" : merge({
       key_name     = aws_key_pair.ssh.key_name
@@ -325,13 +325,16 @@ locals {
 
       subnet_ids             = [sort(module.vpc.public_subnets)[0]]
       vpc_security_group_ids = [aws_security_group.worker_public.id]
-      }, {
+    }, {
       name          = "g4dn-xlarge-dedicated"
       instance_type = "g4dn.xlarge"
-      ami_id        = data.aws_ami.eks_gpu.id
+
+      # Use AL2023 NVIDIA EKS-optimized AMI from SSM (for 1.33)
+      ami_id = data.aws_ssm_parameter.eks_al2023_x64_nvidia.value
 
       subnet_ids = [sort(module.vpc.public_subnets)[0]]
 
+      # Keep your kubelet/labels/taints
       bootstrap_extra_args = "--kubelet-extra-args '${
         join(" ", [
           "--node-labels=zeet.co/dedicated=dedicated,zeet.co/gpu=\"true\"",
@@ -339,7 +342,6 @@ locals {
         ])
       }'"
 
-      // not used just for reference
       labels = {
         "zeet.co/dedicated" = "dedicated"
         "zeet.co/gpu"       = "true"
@@ -350,7 +352,6 @@ locals {
           value  = "dedicated"
           effect = "NO_SCHEDULE"
         },
-
         {
           key    = "zeet.co/gpu"
           value  = "true"
@@ -366,7 +367,7 @@ module "eks" {
   version = "~> 18.20.0"
 
   cluster_name    = var.cluster_name
-  cluster_version = var.cluster_version
+  cluster_version = var.cluster_version # set to "1.33" to match live cluster
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = flatten([module.vpc.private_subnets, module.vpc.public_subnets])
@@ -421,13 +422,13 @@ locals {
         key                 = "k8s.io/cluster-autoscaler/node-template/label/${k}"
         propagate_at_launch = false
         value               = v
-        }], [{
+      }], [{
         id                  = join("-", [n, "autoscaling-storage"])
         name                = n
         key                 = "k8s.io/cluster-autoscaler/node-template/resources/ephemeral-storage"
         propagate_at_launch = false
         value               = "50Gi"
-        }, {
+      }, {
         id                  = join("-", [n, "autoscaling-enabled"])
         name                = n
         key                 = "k8s.io/cluster-autoscaler/enabled"
@@ -445,7 +446,7 @@ locals {
         key                 = "k8s.io/cluster-autoscaler/node-template/label/${k}"
         propagate_at_launch = false
         value               = v
-        }], [{
+      }], [{
         id                  = join("-", [n, "autoscaling-enabled"])
         name                = n
         key                 = "k8s.io/cluster-autoscaler/enabled"
