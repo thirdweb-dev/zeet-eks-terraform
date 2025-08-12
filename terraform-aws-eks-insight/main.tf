@@ -44,10 +44,6 @@ resource "aws_eip" "nat" {
 # Path: /aws/service/eks/optimized-ami/<k8s>/amazon-linux-2023/x86_64/nvidia/recommended/image_id
 # ------------------------------------------------------------------------------------
 
-data "aws_ssm_parameter" "eks_al2023_x64_nvidia" {
-  name = "/aws/service/eks/optimized-ami/${var.cluster_version}/amazon-linux-2023/x86_64/nvidia/recommended/image_id"
-}
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.0.0"
@@ -303,63 +299,6 @@ locals {
       vpc_security_group_ids = [aws_security_group.worker_public.id]
     }, v)
   }
-
-  # --------------------------- GPU SELF-MANAGED NODES ----------------------------
-  worker_templates_gpu = var.enable_gpu ? {
-    "g4dn-xlarge-dedi" : merge({
-      key_name     = aws_key_pair.ssh.key_name
-      desired_size = 0
-      min_size     = 0
-      max_size     = 10
-
-      block_device_mappings = {
-        xvda = {
-          device_name = "/dev/xvda"
-          ebs = {
-            volume_size           = 50
-            volume_type           = "gp2"
-            delete_on_termination = true
-          }
-        }
-      }
-
-      subnet_ids             = [sort(module.vpc.public_subnets)[0]]
-      vpc_security_group_ids = [aws_security_group.worker_public.id]
-    }, {
-      name          = "g4dn-xlarge-dedicated"
-      instance_type = "g4dn.xlarge"
-
-      # Use AL2023 NVIDIA EKS-optimized AMI from SSM (for 1.33)
-      ami_id = data.aws_ssm_parameter.eks_al2023_x64_nvidia.value
-
-      subnet_ids = [sort(module.vpc.public_subnets)[0]]
-
-      # Keep your kubelet/labels/taints
-      bootstrap_extra_args = "--kubelet-extra-args '${
-        join(" ", [
-          "--node-labels=zeet.co/dedicated=dedicated,zeet.co/gpu=\"true\"",
-          "--register-with-taints nvidia.com/gpu=present:NoSchedule",
-        ])
-      }'"
-
-      labels = {
-        "zeet.co/dedicated" = "dedicated"
-        "zeet.co/gpu"       = "true"
-      }
-      taints = [
-        {
-          key    = "zeet.co/dedicated"
-          value  = "dedicated"
-          effect = "NO_SCHEDULE"
-        },
-        {
-          key    = "zeet.co/gpu"
-          value  = "true"
-          effect = "NO_SCHEDULE"
-        }
-      ]
-    })
-  } : {}
 }
 
 module "eks" {
@@ -386,12 +325,14 @@ module "eks" {
 
   eks_managed_node_groups = local.worker_templates_cpu
 
-  self_managed_node_group_defaults = {
-    disk_size = 100
-  }
+  # Remove self-managed GPU; use Managed NG for GPU
+  # self_managed_node_group_defaults = {
+  #   disk_size = 100
+  # }
 
-  self_managed_node_groups = local.worker_templates_gpu
+  # self_managed_node_groups = local.worker_templates_gpu
 
+  
   node_security_group_additional_rules = {
     ingress_self_all = {
       description = "Node to node all ports/protocols"
@@ -437,38 +378,6 @@ locals {
       }]
     )
   ])
-
-  self_managed_node_groups_tags = flatten([
-    for n, i in local.worker_templates_gpu : concat([
-      for k, v in i.labels : {
-        id                  = join("-", [n, k])
-        name                = n
-        key                 = "k8s.io/cluster-autoscaler/node-template/label/${k}"
-        propagate_at_launch = false
-        value               = v
-      }], [{
-        id                  = join("-", [n, "autoscaling-enabled"])
-        name                = n
-        key                 = "k8s.io/cluster-autoscaler/enabled"
-        propagate_at_launch = true
-        value               = "true"
-      },
-      {
-        id                  = join("-", [n, "autoscaling-owner"])
-        name                = n
-        key                 = "k8s.io/cluster-autoscaler/${var.cluster_name}"
-        propagate_at_launch = true
-        value               = "true"
-      },
-      {
-        id                  = join("-", [n, "autoscaling-storage"])
-        name                = n
-        key                 = "k8s.io/cluster-autoscaler/node-template/resources/ephemeral-storage"
-        propagate_at_launch = false
-        value               = "50Gi"
-      }]
-    )
-  ])
 }
 
 resource "aws_autoscaling_group_tag" "eks_managed_node_groups" {
@@ -482,19 +391,6 @@ resource "aws_autoscaling_group_tag" "eks_managed_node_groups" {
     propagate_at_launch = each.value.propagate_at_launch
   }
 }
-
-resource "aws_autoscaling_group_tag" "self_managed_node_groups" {
-  for_each = { for t in local.self_managed_node_groups_tags : t.id => t }
-
-  autoscaling_group_name = module.eks.self_managed_node_groups[each.value.name].autoscaling_group_name
-
-  tag {
-    key                 = each.value.key
-    value               = each.value.value
-    propagate_at_launch = each.value.propagate_at_launch
-  }
-}
-
 resource "aws_eks_addon" "eks_addon_csi" {
   cluster_name             = module.eks.cluster_id
   service_account_role_arn = module.iam_ebs-csi.this_iam_role_arn
