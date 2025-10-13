@@ -135,6 +135,71 @@ locals {
         "zeet.co/dedicated" = "system"
       }
     }
+    "r7a-4xlarge-dedi" : {
+      instance_types = ["r7a.4xlarge"]
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "r7a-2xlarge-dedi" : {
+      instance_types = ["r7a.2xlarge"]
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "r7a-xlarge-dedi" : {
+      instance_types = ["r7a.xlarge"]
+      min_size = 19
+      desired_size = 19
+
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "r7a-large-dedi" : {
+      instance_types = ["r7a.large"]
+      min_size = 4
+      desired_size = 4
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
     "c7a-4xlarge-dedi" : {
       instance_types = ["c7a.4xlarge"]
 
@@ -281,7 +346,7 @@ locals {
       key_name            = aws_key_pair.ssh.key_name
       desired_size        = 0
       min_size            = 0
-      max_size            = 20
+      max_size            = 50
       autoscaling_enabled = true
 
       block_device_mappings = {
