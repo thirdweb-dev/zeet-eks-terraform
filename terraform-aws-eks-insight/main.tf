@@ -167,7 +167,6 @@ locals {
     }
     "r7a-xlarge-dedi" : {
       instance_types = ["r7a.xlarge"]
-      desired_size = 19
 
 
       labels = {
@@ -184,7 +183,6 @@ locals {
     }
     "r7a-large-dedi" : {
       instance_types = ["r7a.large"]
-      desired_size = 4
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
