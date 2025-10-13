@@ -12,6 +12,11 @@ output "self_managed_node_groups_role" {
   value = values(module.eks.self_managed_node_groups)[*].iam_role_arn
 }
 
+output "eks_managed_node_groups_role_arns" {
+  description = "IAM role ARNs for EKS managed node groups"
+  value       = { for k, v in module.eks.eks_managed_node_groups : k => v.iam_role_arn }
+}
+
 output "region" {
   description = "AWS region."
   value       = var.region

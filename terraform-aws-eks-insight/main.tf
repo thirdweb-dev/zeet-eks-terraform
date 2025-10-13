@@ -337,6 +337,11 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     disk_size = 100
+    
+    # Attach additional policies to all node group roles
+    role_additional_policies = {
+      Warpstream_Insight_Production = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/Warpstream_Insight_Production"
+    }
   }
 
   eks_managed_node_groups = local.worker_templates_cpu
@@ -407,6 +412,7 @@ resource "aws_autoscaling_group_tag" "eks_managed_node_groups" {
     propagate_at_launch = each.value.propagate_at_launch
   }
 }
+
 resource "aws_eks_addon" "eks_addon_csi" {
   cluster_name             = module.eks.cluster_id
   service_account_role_arn = module.iam_ebs-csi.this_iam_role_arn
