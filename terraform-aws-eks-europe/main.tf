@@ -176,6 +176,25 @@ locals {
         }
       ]
     }
+    "r7g-2xlarge-arm" : {
+      instance_types = ["r7g.2xlarge"]
+      ami_type       = "AL2_ARM_64"
+      min_size       = 1
+      desired_size   = 1
+      max_size       = 100
+      
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
     "r6g-large-arm" : {
       instance_types = ["r6g.large"]
       ami_type       = "AL2_ARM_64"
