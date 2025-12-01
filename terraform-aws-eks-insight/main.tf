@@ -294,9 +294,11 @@ locals {
     }
     "r7a-large-indexer-db" : {
       instance_types = ["r7a.large"]
+      desired_size   = 1
 
       labels = {
         "indexer_db" = "true"
+        "zeet.co/dedicated" = "dedicated"
       }
 
       taints = [
