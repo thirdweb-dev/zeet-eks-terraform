@@ -292,6 +292,32 @@ locals {
         }
       ]
     }
+    "r7a-large-indexer-db" : {
+      instance_types = ["r7a.large"]
+
+      labels = {
+        "indexer_db" = "true"
+      }
+
+      taints = [
+        {
+          key    = "indexer_db"
+          value  = "true"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size           = 1000
+            volume_type           = "gp3"
+            delete_on_termination = true
+          }
+        }
+      }
+    }
   } : k => merge({
       name                = k
       key_name            = aws_key_pair.ssh.key_name
