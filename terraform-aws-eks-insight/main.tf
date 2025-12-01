@@ -365,9 +365,9 @@ module "eks" {
     disk_size = 100
     
     # Attach additional policies to all node group roles
-    iam_role_additional_policies = {
-      Warpstream_Insight_Production = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/Warpstream_Insight_Production"
-    }
+    iam_role_additional_policies = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/Warpstream_Insight_Production"
+    ]
   }
 
   eks_managed_node_groups = local.worker_templates_cpu
