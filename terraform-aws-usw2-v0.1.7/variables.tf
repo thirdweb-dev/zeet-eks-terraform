@@ -16,7 +16,7 @@ variable "cluster_name" {
 
 variable "cluster_version" {
   type    = string
-  default = "1.28" # TODO: anchor integration
+  default = "1.29" # TODO: anchor integration
 }
 
 variable "cluster_domain" {
