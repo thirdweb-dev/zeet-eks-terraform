@@ -183,7 +183,8 @@ locals {
     }
     "c7a-xlarge-dedi" : {
       instance_types = ["c7a.xlarge"]
-
+      desired_size        = 1
+      min_size            = 1
 
       labels = {
         "zeet.co/dedicated" = "dedicated"
