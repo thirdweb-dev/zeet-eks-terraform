@@ -181,6 +181,38 @@ locals {
         }
       ]
     }
+    "c7a-xlarge-dedi" : {
+      instance_types = ["c7a.xlarge"]
+
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
+    "c7a-2xlarge-dedi" : {
+      instance_types = ["c7a.2xlarge"]
+
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
     "r7a-large-dedi" : {
       instance_types = ["r7a.large"]
 
