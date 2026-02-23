@@ -165,6 +165,21 @@ locals {
         }
       ]
     }
+    "r7a-4xlarge-dedi" : {
+      instance_types = ["r7a.4xlarge"]
+
+      labels = {
+        "zeet.co/dedicated" = "dedicated"
+      }
+
+      taints = [
+        {
+          key    = "zeet.co/dedicated"
+          value  = "dedicated"
+          effect = "NO_SCHEDULE"
+        }
+      ]
+    }
     "r7a-xlarge-dedi" : {
       instance_types = ["r7a.xlarge"]
 
